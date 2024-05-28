@@ -1,0 +1,67 @@
+###### [1] SET ENVIRONMENT ######
+Currently Loaded Modulefiles:
+  1) compiler/devtoolset/7.3.1   3) compiler/dtk/22.10.1
+  2) mpi/hpcx/2.11.0/gcc-7.3.1
+###### [2] COMPILE ######
+/opt/gridview/slurm/spool/slurmd/job705408/slurm_script: line 17: cd: /work/home/ac3mzrt9ej/work/home/ac3mzrt9ej/xjf/cpu_demo_SpMM/demo-SpMM/: No such file or directory
+rm -f *.o
+rm -f Csrsparse_rocsparse
+/public/software/compiler/dtk-22.10.1/hip/bin/hipcc -Dgpu -O2 -I ./ -I /public/software/compiler/dtk-22.10.1/rocsparse/include -c main.cpp -o main.o
+/public/software/compiler/dtk-22.10.1/hip/bin/hipcc main.o -L /public/software/compiler/dtk-22.10.1/rocsparse/lib/ -lrocsparse -o Csrsparse_rocsparse
+###### [3] RUN TEST: ######
+###### A:random 10000x10000 spa=0.00007, B:random 50000x50000 spa=0.0001 ######
+==================================================================
+Instructions:
+[1] If using local file to creat matrix A, input args shold be: 
+    1, CSR file path, sparsity of B, random seed of generating matrix 
+[2] If generating matrix A randomly, input args shold be: 
+    0, rows of A, columns of A, sparsity of A, sparsity of B, random seed of generating matrix 
+==================================================================
+matrix A and matrix B are both generated randomly!
+Preparing Host Memory ... 
+generate_sparse_matrix finished!
+non zero num of matrix A : 174204
+non zero num of matrix B : 250064
+matrix_to_csr finished!
+marix A: 50000 X 50000    marix B: 50000 X 50000
+sparsity A: 7e-05    sparsity B: 0.0001
+random seed for generating matrx : 1234
+alpha = 115.117
+==================================================================
+Preparing Device Memory ... 
+device memory malloc finished!
+device data memcpy finished!
+==================================================================
+Runing Warmup ... 
+f_one time: 65907(us)
+quic_time : 2.30283e+06(us)
+non zero num of matrix C : 868506
+Warmup finished!  elapsed time: 2.36909e+06(us)
+==================================================================
+Runing device spgemm ... 
+f_one time: 65118(us)
+quic_time : 2.24871e+06(us)
+Round: 1  elapsed time: 2.31407e+06(us)
+f_one time: 65204(us)
+quic_time : 2.2489e+06(us)
+Round: 2  elapsed time: 2.31436e+06(us)
+f_one time: 65097(us)
+quic_time : 2.24866e+06(us)
+Round: 3  elapsed time: 2.31402e+06(us)
+f_one time: 65112(us)
+quic_time : 2.24861e+06(us)
+Round: 4  elapsed time: 2.31398e+06(us)
+f_one time: 65111(us)
+quic_time : 2.24863e+06(us)
+Round: 5  elapsed time: 2.31398e+06(us)
+non zero num of matrix C : 868506
+Device calculation finished!  elapsed time (mean): 2.31408e+06(us)
+==================================================================
+Runing rocsparse spgemm ... 
+non zero num of matrix C : 868507
+Rocsparse calculation finished!  elapsed time: 27823(us)
+==================================================================
+Runing verify ... 
+Congratulations, verification pass! 
+==================================================================
+###### ALL TEST FINISHED ######
